@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Modern Focus Mode Arena - Gamified Pomodoro Timer">
+    <title>Focus Mode Arena | Productivity Timer</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Main App Container with State Management -->
+    <div id="app" class="app-container" data-state="idle">
+        
+        <!-- Header with Stats Badge -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1 class="app-title">
+                    <span class="title-icon">⚡</span>
+                    <span>Focus Mode Arena</span>
+                </h1>
+                <p class="app-subtitle">Enter the zone. Track your flow state.</p>
+            </div>
+            <div class="session-streak" id="streakBadge">
+                <span class="streak-icon">🔥</span>
+                <span id="streakCount">0</span>
+            </div>
+        </header>
+
+        <main class="app-main">
+            
+            <!-- Timer Orbital Display -->
+            <section class="timer-arena" aria-label="Focus timer">
+                <div class="timer-orbital">
+                    <!-- Animated Progress Ring -->
+                    <svg class="progress-svg" viewBox="0 0 300 300">
+                        <defs>
+                            <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-track" cx="150" cy="150" r="130" />
+                        <circle class="progress-bar" id="progressCircle" cx="150" cy="150" r="130" />
+                    </svg>
+                    
+                    <!-- Timer Display -->
+                    <div class="timer-core">
+                        <div class="timer-value" id="timerDisplay">25:00</div>
+                        <div class="timer-state-label" id="stateLabel">Ready</div>
+                    </div>
+                </div>
+
+                <!-- Particle Effect Container -->
+                <div class="particles" id="particles" aria-hidden="true"></div>
+            </section>
+
+            <!-- Live Score Dashboard -->
+            <section class="score-dashboard" aria-label="Performance metrics">
+                <div class="metric-card" data-metric="score">
+                    <div class="metric-icon">⭐</div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="currentScore">0</div>
+                        <div class="metric-label">Focus Score</div>
+                    </div>
+                </div>
+                <div class="metric-card" data-metric="efficiency">
+                    <div class="metric-icon">📊</div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="efficiency">100%</div>
+                        <div class="metric-label">Efficiency</div>
+                    </div>
+                </div>
+                <div class="metric-card" data-metric="best">
+                    <div class="metric-icon">🏆</div>
+                    <div class="metric-content">
+                        <div class="metric-value" id="sessionBest">0</div>
+                        <div class="metric-label">Best Score</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Duration Configurator -->
+            <section class="duration-config" aria-label="Timer settings">
+                <label class="config-label">Duration</label>
+                <div class="time-selector">
+                    <div class="time-input-wrapper">
+                        <input type="number" id="hoursInput" class="time-input" min="0" max="23" value="0" aria-label="Hours">
+                        <span class="time-unit">h</span>
+                    </div>
+                    <span class="time-sep">:</span>
+                    <div class="time-input-wrapper">
+                        <input type="number" id="minutesInput" class="time-input" min="0" max="59" value="25" aria-label="Minutes">
+                        <span class="time-unit">m</span>
+                    </div>
+                    <span class="time-sep">:</span>
+                    <div class="time-input-wrapper">
+                        <input type="number" id="secondsInput" class="time-input" min="0" max="59" value="0" aria-label="Seconds">
+                        <span class="time-unit">s</span>
+                    </div>
+                    <button id="applyDurationBtn" class="btn-apply" aria-label="Apply duration">
+                        <span>Set</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Control Center -->
+            <section class="control-center" aria-label="Timer controls">
+                <button id="startBtn" class="btn-control btn-start" aria-label="Start or pause timer">
+                    <span class="btn-icon">▶</span>
+                    <span class="btn-text">Start</span>
+                </button>
+                <button id="resetBtn" class="btn-control btn-reset" aria-label="Reset timer">
+                    <span class="btn-icon">↻</span>
+                    <span class="btn-text">Reset</span>
+                </button>
+            </section>
+
+            <!-- Status Monitor -->
+            <section class="status-monitor" aria-label="Activity monitoring">
+                <div class="monitor-item" data-status="tab">
+                    <div class="status-pulse" id="tabStatus"></div>
+                    <span class="status-label">Tab Focus</span>
+                </div>
+                <div class="monitor-item" data-status="activity">
+                    <div class="status-pulse" id="activityStatus"></div>
+                    <span class="status-label">Activity</span>
+                </div>
+            </section>
+
+            <!-- Toast Notifications -->
+            <div id="notification" class="toast-notification" role="alert" aria-live="assertive"></div>
+
+            <!-- Distraction Log (Collapsible) -->
+            <details class="log-section" aria-label="Penalty log">
+                <summary class="log-header">
+                    <span class="log-icon">📋</span>
+                    <span>Distraction Log</span>
+                    <span class="log-count" id="logCount">0</span>
+                </summary>
+                <ul id="penaltyLog" class="log-list"></ul>
+            </details>
+
+            <!-- Post-Session Analysis -->
+            <section id="analysisSection" class="analysis-panel" aria-label="Session analysis">
+                <div class="analysis-header">
+                    <h3 class="analysis-title">
+                        <span class="analysis-icon">🎯</span>
+                        Session Complete
+                    </h3>
+                    <button id="closeAnalysisBtn" class="btn-close" aria-label="Close analysis">×</button>
+                </div>
+                
+                <div class="analysis-body">
+                    <div class="performance-category" id="performanceCategory">
+                        <div class="category-badge"></div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Focus Time</div>
+                            <div class="stat-value" id="analysisFocusTime">0:00</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Idle Time</div>
+                            <div class="stat-value" id="analysisIdleTime">0:00</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Distractions</div>
+                            <div class="stat-value negative" id="analysisDistractions">0</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Final Score</div>
+                            <div class="stat-value highlight" id="analysisFinalScore">0</div>
+                        </div>
+                    </div>
+
+                    <div class="feedback-block">
+                        <div class="feedback-summary" id="feedbackSummary"></div>
+                        <div class="suggestions-block">
+                            <h4 class="suggestions-title">💡 Level Up</h4>
+                            <ul id="suggestionsList" class="suggestions-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer Info -->
+        <footer class="app-footer">
+            <div class="scoring-info">
+                <span class="info-badge positive">+1/sec</span>
+                <span class="info-badge neutral">-10 tab</span>
+                <span class="info-badge negative">-20 idle</span>
+            </div>
+        </footer>
+
+    </div>
+
+    <script type="module" src="scripts/scripts.js"></script>
+</body>
+</html>

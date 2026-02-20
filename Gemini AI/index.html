@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Focus Arena</title>
+    <!-- Modern Font: Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="app-background"></div>
+    
+    <main class="focus-arena">
+        <header class="arena-header">
+            <h1 class="logo">Focus<span class="highlight">Arena</span></h1>
+            <div class="user-level">
+                <div class="level-info">
+                    <span class="level-badge">Lvl <span id="level-display">1</span></span>
+                    <span class="xp-text"><span id="xp-display">0</span> XP</span>
+                </div>
+                <div class="xp-bar-container">
+                    <div id="xp-bar-fill" class="xp-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </header>
+
+        <section class="timer-section">
+            <div class="timer-ring-container">
+                <svg class="progress-ring" width="280" height="280">
+                    <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="120" cx="140" cy="140"/>
+                    <circle id="timer-progress" class="progress-ring__circle" stroke="#3b82f6" stroke-width="8" fill="transparent" r="120" cx="140" cy="140"/>
+                </svg>
+                <div class="timer-content">
+                    <div id="status-badge" class="status-badge ready">Ready</div>
+                    <div id="timer-display" class="timer-text">25:00</div>
+                    <div id="penalty-indicator" class="penalty-indicator hidden">-10 XP</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="controls-area">
+            <div class="duration-setter">
+                <div class="input-group">
+                    <input type="number" id="input-hrs" class="duration-input" value="0" min="0" max="23" placeholder="HH">
+                    <span class="unit-label">h</span>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="input-min" class="duration-input" value="25" min="0" max="59" placeholder="MM">
+                    <span class="unit-label">m</span>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="input-sec" class="duration-input" value="0" min="0" max="59" placeholder="SS">
+                    <span class="unit-label">s</span>
+                </div>
+                <button class="icon-btn refresh-btn" id="btn-set-duration" aria-label="Set Duration">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="main-actions">
+                <button id="btn-main" class="btn-primary">Start Focus</button>
+                <button id="btn-reset" class="btn-secondary" aria-label="Reset Timer">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 12" />
+                        <path d="M3 3v9h9" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="analysis-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Session Complete</h2>
+                    <button id="btn-close-modal" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="score-summary">
+                        <div class="score-card">
+                            <span class="label">Efficiency</span>
+                            <span id="modal-efficiency" class="value">100%</span>
+                        </div>
+                        <div class="score-card">
+                            <span class="label">XP Earned</span>
+                            <span id="modal-xp" class="value">+500</span>
+                        </div>
+                    </div>
+                    <div class="feedback-section">
+                        <h4>Performance Analysis</h4>
+                        <p id="modal-summary">Excellent focus session.</p>
+                        <ul id="modal-suggestions"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="scripts/scripts.js"></script>
+</body>
+</html>
